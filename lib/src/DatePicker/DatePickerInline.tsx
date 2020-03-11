@@ -41,7 +41,6 @@ export const DatePickerInline: React.SFC<DatePickerInlineProps> = props => {
 
   const ComponentToShow: any = onlyCalendar ? Calendar : DatePicker;
 
-  return <div>lol</div>
   return (
     <BasePicker {...props} autoOk>
       {({

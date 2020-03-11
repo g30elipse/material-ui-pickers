@@ -171,6 +171,12 @@ export class DatePicker extends React.PureComponent<DatePickerProps> {
             selected={openView === 'year'}
             label={utils.getYearText(this.date)}
           />
+          <ToolbarButton
+            variant={this.isYearOnly ? 'h3' : 'h5'}
+            onClick={this.isYearOnly ? undefined : this.openMonthSelection}
+            selected={openView === 'month'}
+            label={utils.getMonthText(this.date)}
+          />
 
           {!this.isYearOnly && !this.isYearAndMonth && (
             <ToolbarButton
