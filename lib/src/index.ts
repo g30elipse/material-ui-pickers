@@ -1,34 +1,40 @@
-import { DayProps as DayPropsType } from './views/Calendar/Day';
+import { DatePickerInlineProps as _DatePickerInlineProps, DatePickerProps as _DatePickerProps } from './DatePicker';
+import { DateTimePickerInlineProps as _DateTimePickerInlineProps, DateTimePickerProps as _DateTimePickerProps } from './DateTimePicker';
+import { TimePickerInlineProps as _TimePickerInlineProps, TimePickerProps as _TimePickerProps } from './TimePicker';
+import { MaterialUiPickersDate as _MaterialUiPickersDate } from './typings/date';
 
-export * from './DatePicker';
+export type TimePickerProps = _TimePickerProps;
 
-export * from './TimePicker';
+export type TimePickerInlineProps = _TimePickerInlineProps;
 
-export * from './DateTimePicker';
+export type DatePickerProps = _DatePickerProps;
 
-export { Calendar } from './views/Calendar/Calendar';
+export type DatePickerInlineProps = _DatePickerInlineProps;
 
-export * from './views/Calendar/CalendarView';
+export type DateTimePickerProps = _DateTimePickerProps;
 
-export { Day } from './views/Calendar/Day';
+export type DateTimePickerInlineProps = _DateTimePickerInlineProps;
 
-export type DayProps = DayPropsType;
+export type MaterialUiPickersDate = _MaterialUiPickersDate;
 
-export { default as TimePickerView, ClockView } from './views/Clock/ClockView';
+export { default as DatePicker, InlineDatePicker } from './DatePicker';
 
-export { default as Clock } from './views/Clock/Clock';
+export { default as TimePicker, InlineTimePicker } from './TimePicker';
 
-export { Picker } from './Picker/Picker';
+export { default as DateTimePicker, InlineDateTimePicker } from './DateTimePicker';
 
-export { makePickerWithStateAndWrapper as makePickerWithState } from './Picker/makePickerWithState';
+export { default as BasePicker } from './_shared/BasePicker';
 
-export { validate } from './_helpers/text-field-helper';
+export { default as Calendar } from './DatePicker/components/Calendar';
 
-export { useUtils } from './_shared/hooks/useUtils';
+export { default as Day } from './DatePicker/components/Day';
 
-export { usePickerState } from './_shared/hooks/usePickerState';
+export { default as TimePickerView } from './TimePicker/components/TimePickerView';
+
+export { default as Clock } from './TimePicker/components/Clock';
 
 export {
-  LocalizationProvider,
-  MuiPickersAdapterContext as MuiPickersContext,
-} from './LocalizationProvider';
+  default as MuiPickersUtilsProvider,
+  MuiPickersContext,
+  MuiPickersContextConsumer,
+} from './MuiPickersUtilsProvider';

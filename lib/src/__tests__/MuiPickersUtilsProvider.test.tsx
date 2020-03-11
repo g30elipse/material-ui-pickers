@@ -1,17 +1,16 @@
-// required to use just shallow here because utils prop override
-import * as React from 'react';
 import DateFnsUtils from '@date-io/date-fns';
-import LocalizationProvider, { LocalizationProviderProps } from '../LocalizationProvider';
 import { shallow, ShallowWrapper } from 'enzyme'; // required to use just shallow here because utils prop override
+import * as React from 'react';
+import MuiPickersUtilsProvider, { MuiPickersUtilsProviderProps } from '../MuiPickersUtilsProvider';
 
-describe('LocalizationProvider', () => {
-  let component: ShallowWrapper<LocalizationProviderProps>;
+describe('MuiPickersUtilsProvider', () => {
+  let component: ShallowWrapper<MuiPickersUtilsProviderProps>;
 
   beforeEach(() => {
     component = shallow(
-      <LocalizationProvider dateAdapter={DateFnsUtils}>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <div />
-      </LocalizationProvider>
+      </MuiPickersUtilsProvider>
     );
   });
 

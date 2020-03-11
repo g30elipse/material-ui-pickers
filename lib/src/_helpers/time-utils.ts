@@ -1,53 +1,25 @@
 import { IUtils } from '@date-io/core/IUtils';
+import { MeridiemMode } from '../DateTimePicker/components/DateTimePickerHeader';
 import { MaterialUiPickersDate } from '../typings/date';
-import { MuiPickersAdapter } from '../_shared/hooks/useUtils';
 
-export const getMeridiem = (
-  date: MaterialUiPickersDate,
-  utils: IUtils<MaterialUiPickersDate>
-): 'am' | 'pm' => {
-  return utils.getHours(date) >= 12 ? 'pm' : 'am';
-};
-
-export const convertValueToMeridiem = (value: number, meridiem: 'am' | 'pm', ampm: boolean) => {
-  if (ampm) {
-    const currentMeridiem = value >= 12 ? 'pm' : 'am';
-    if (currentMeridiem !== meridiem) {
-      return meridiem === 'am' ? value - 12 : value + 12;
-    }
-  }
-
-  return value;
-};
-
-export const convertToMeridiem = (
-  time: MaterialUiPickersDate,
-  meridiem: 'am' | 'pm',
-  ampm: boolean,
-  utils: IUtils<MaterialUiPickersDate>
-) => {
-  const newHoursAmount = convertValueToMeridiem(utils.getHours(time), meridiem, ampm);
-  return utils.setHours(time, newHoursAmount);
-};
-
-const clockCenter = {
+const center = {
   x: 260 / 2,
   y: 260 / 2,
 };
 
-const baseClockPoint = {
-  x: clockCenter.x,
+const basePoint = {
+  x: center.x,
   y: 0,
 };
 
-const cx = baseClockPoint.x - clockCenter.x;
-const cy = baseClockPoint.y - clockCenter.y;
+const cx = basePoint.x - center.x;
+const cy = basePoint.y - center.y;
 
 const rad2deg = (rad: number) => rad * 57.29577951308232;
 
 const getAngleValue = (step: number, offsetX: number, offsetY: number) => {
-  const x = offsetX - clockCenter.x;
-  const y = offsetY - clockCenter.y;
+  const x = offsetX - center.x;
+  const y = offsetY - center.y;
 
   const atan = Math.atan2(cx, cy) - Math.atan2(x, y);
 
@@ -62,15 +34,8 @@ const getAngleValue = (step: number, offsetX: number, offsetY: number) => {
   return { value, distance };
 };
 
-export const getMinutes = (offsetX: number, offsetY: number, step = 1) => {
-  const angleStep = step * 6;
-  let { value } = getAngleValue(angleStep, offsetX, offsetY);
-  value = (value * step) % 60;
-
-  return value;
-};
-
 export const getHours = (offsetX: number, offsetY: number, ampm: boolean) => {
+  // tslint:disable-next-line
   let { value, distance } = getAngleValue(30, offsetX, offsetY);
   value = value || 12;
 
@@ -86,13 +51,28 @@ export const getHours = (offsetX: number, offsetY: number, ampm: boolean) => {
   return value;
 };
 
-export function getSecondsInDay(date: MaterialUiPickersDate, utils: MuiPickersAdapter) {
-  return utils.getHours(date) * 3600 + utils.getMinutes(date) * 60 + utils.getSeconds(date);
-}
+export const getMinutes = (offsetX: number, offsetY: number, step = 1) => {
+  const angleStep = step * 6;
+  let { value } = getAngleValue(angleStep, offsetX, offsetY);
+  value = (value * step) % 60;
 
-export const createIsAfterIgnoreDatePart = (utils: MuiPickersAdapter) => (
-  dateLeft: MaterialUiPickersDate,
-  dateRight: MaterialUiPickersDate
+  return value;
+};
+
+export const convertToMeridiem = (
+  time: MaterialUiPickersDate,
+  meridiem: MeridiemMode,
+  ampm: boolean,
+  utils: IUtils<MaterialUiPickersDate>
 ) => {
-  return getSecondsInDay(dateLeft, utils) > getSecondsInDay(dateRight, utils);
+  if (ampm) {
+    const currentMeridiem = utils.getHours(time) >= 12 ? 'pm' : 'am';
+    if (currentMeridiem !== meridiem) {
+      const hours = meridiem === 'am' ? utils.getHours(time) - 12 : utils.getHours(time) + 12;
+
+      return utils.setHours(time, hours);
+    }
+  }
+
+  return time;
 };

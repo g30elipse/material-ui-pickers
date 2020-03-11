@@ -1,19 +1,21 @@
+import { ShallowWrapper } from 'enzyme';
 import * as React from 'react';
-import Month from '../../views/Calendar/Month';
-import { ReactWrapper } from 'enzyme';
-import { mount, utilsToUse } from '../test-utils';
-import { MonthSelection, MonthSelectionProps } from '../../views/Calendar/MonthSelection';
+import Month from '../../DatePicker/components/Month';
+import { MonthSelection, MonthSelectionProps } from '../../DatePicker/components/MonthSelection';
+import { shallow, utilsToUse } from '../test-utils';
 
 describe('MonthSelection', () => {
-  let component: ReactWrapper<MonthSelectionProps>;
+  let component: ShallowWrapper<MonthSelectionProps>;
 
   beforeEach(() => {
-    component = mount(
+    component = shallow(
       <MonthSelection
+        classes={{} as any}
         minDate={new Date('03-01-2017')}
         maxDate={new Date('05-01-2017')}
         date={utilsToUse.date('04-01-2017')}
         onChange={jest.fn()}
+        utils={utilsToUse}
       />
     );
   });

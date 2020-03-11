@@ -1,40 +1,27 @@
-import { useStyles as DayStyles } from '../views/Calendar/Day';
-import { useStyles as ClockStyles } from '../views/Clock/Clock';
-import { useStyles as MuiBasePickerStyles } from '../Picker/Picker';
-import { useStyles as ModalDialogStyles } from '../_shared/ModalDialog';
-import { useStyles as CalendarStyles } from '../views/Calendar/Calendar';
-import { useStyles as MuiPickersYearStyles } from '../views/Calendar/Year';
-import { styles as ClockPointerStyles } from '../views/Clock/ClockPointer';
-import { useStyles as ToolbarButtonStyles } from '../_shared/ToolbarButton';
-import { useStyles as PickerToolbarStyles } from '../_shared/PickerToolbar';
-import { useStyles as ClockNumberStyles } from '../views/Clock/ClockNumber';
-import { useStyles as MuiPickersMonthStyles } from '../views/Calendar/Month';
-import { useStyles as CalendarViewStyles } from '../views/Calendar/CalendarView';
-import { useStyles as DTTabsStyles } from '../DateTimePicker/DateTimePickerTabs';
-import { useStyles as MuiPickersToolbarTextStyles } from '../_shared/ToolbarText';
-import { useStyles as DatePickerRootStyles } from '../DatePicker/DatePickerToolbar';
-import { useStyles as CalendarHeaderStyles } from '../views/Calendar/CalendarHeader';
 import { StyleRules, StyleRulesCallback } from '@material-ui/core/styles/withStyles';
-import { useStyles as DTHeaderStyles } from '../DateTimePicker/DateTimePickerToolbar';
-import { useStyles as TimePickerToolbarStyles } from '../TimePicker/TimePickerToolbar';
-import { useStyles as SlideTransitionStyles } from '../views/Calendar/SlideTransition';
-import { useStyles as MuiPickersYearSelectionStyles } from '../views/Calendar/YearSelection';
-import { useStyles as MuiPickersMonthSelectionStyles } from '../views/Calendar/MonthSelection';
-import { useStyles as MuiPickerDTToolbarStyles } from '../DateTimePicker/DateTimePickerToolbar';
-
-type StylesHook<C extends string> = (props?: any) => Record<C, string>;
+import { styles as ModalDialogStyles } from '../_shared/ModalDialog';
+import { styles as PickerToolbarStyles } from '../_shared/PickerToolbar';
+import { styles as ToolbarButtonStyles } from '../_shared/ToolbarButton';
+import { styles as CalendarStyles } from '../DatePicker/components/Calendar';
+import { styles as CalendarHeaderStyles } from '../DatePicker/components/CalendarHeader';
+import { styles as DayStyles } from '../DatePicker/components/Day';
+import { styles as MuiPickersMonthStyles } from '../DatePicker/components/Month';
+import { styles as MuiPickersMonthSelectionStyles } from '../DatePicker/components/MonthSelection';
+import { styles as SlideTransitionStyles } from '../DatePicker/components/SlideTransition';
+import { styles as MuiPickersYearStyles } from '../DatePicker/components/Year';
+import { styles as MuiPickersYearSelectionStyles } from '../DatePicker/components/YearSelection';
+import { styles as DTHeaderStyles } from '../DateTimePicker/components/DateTimePickerHeader';
+import { styles as DTTabsStyles } from '../DateTimePicker/components/DateTimePickerTabs';
+import { styles as ClockStyles } from '../TimePicker/components/Clock';
+import { styles as ClockNumberStyles } from '../TimePicker/components/ClockNumber';
+import { styles as ClockPointerStyles } from '../TimePicker/components/ClockPointer';
+import { styles as TimePickerStyles } from '../TimePicker/TimePicker';
 
 type Classes<T> = Partial<
   StyleRules<
     T extends string
       ? T
-      : T extends StylesHook<infer C>
-      ? C
-      : T extends StyleRulesCallback<any, any, infer K>
-      ? K
-      : T extends StyleRules<infer D>
-      ? D
-      : never
+      : T extends StyleRulesCallback<infer K> ? K : T extends StyleRules<infer D> ? D : never
   >
 >;
 
@@ -43,22 +30,17 @@ export interface MuiPickersOverrides {
   MuiPickerDTHeader?: Classes<typeof DTHeaderStyles>;
   MuiPickerDTTabs?: Classes<typeof DTTabsStyles>;
   MuiPickersCalendar?: Classes<typeof CalendarStyles>;
-  MuiPickersCalendarView?: Classes<typeof CalendarViewStyles>;
   MuiPickersCalendarHeader?: Classes<typeof CalendarHeaderStyles>;
   MuiPickersSlideTransition?: Classes<typeof SlideTransitionStyles>;
-  MuiPickersYearSelection?: Classes<typeof MuiPickersYearSelectionStyles>;
+  MuiPickersYearSelectionStyles?: Classes<typeof MuiPickersYearSelectionStyles>;
   MuiPickersYear?: Classes<typeof MuiPickersYearStyles>;
   MuiPickersMonthSelection?: Classes<typeof MuiPickersMonthSelectionStyles>;
   MuiPickersMonth?: Classes<typeof MuiPickersMonthStyles>;
-  MuiPickersTimePickerToolbar?: Classes<typeof TimePickerToolbarStyles>;
+  MuiPickersTimePicker?: Classes<typeof TimePickerStyles>;
   MuiPickersClock?: Classes<typeof ClockStyles>;
   MuiPickersClockNumber?: Classes<typeof ClockNumberStyles>;
   MuiPickersClockPointer?: Classes<typeof ClockPointerStyles>;
   MuiPickersModal?: Classes<typeof ModalDialogStyles>;
   MuiPickersToolbar?: Classes<typeof PickerToolbarStyles>;
   MuiPickersToolbarButton?: Classes<typeof ToolbarButtonStyles>;
-  MuiPickersToolbarText?: Classes<typeof MuiPickersToolbarTextStyles>;
-  MuiPickersDatePickerRoot?: Classes<typeof DatePickerRootStyles>;
-  MuiPickerDTToolbar?: Classes<typeof MuiPickerDTToolbarStyles>;
-  MuiBasePickerStyles?: Classes<typeof MuiBasePickerStyles>;
 }

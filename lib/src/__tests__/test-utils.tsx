@@ -1,17 +1,18 @@
-import * as React from 'react';
-import * as enzyme from 'enzyme';
+import DateFnsUtils from '@date-io/date-fns';
 import LuxonUtils from '@date-io/luxon';
 import MomentUtils from '@date-io/moment';
-import DateFnsUtils from '@date-io/date-fns';
-import LocalizationProvider from '../LocalizationProvider';
-import { IUtils } from '@date-io/core/IUtils';
-import { createMuiTheme } from '@material-ui/core';
-import { MaterialUiPickersDate } from '../typings/date';
-import { ThemeProvider } from '@material-ui/core/styles';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import * as enzyme from 'enzyme';
+import * as React from 'react';
+import { WithUtilsProps } from '../_shared/WithUtils';
+import MuiPickersUtilsProvider from '../MuiPickersUtilsProvider';
 
-interface WithUtilsProps {
-  utils: IUtils<MaterialUiPickersDate>;
-}
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
+});
 
 const getUtilClass = () => {
   switch (process.env.UTILS) {
@@ -27,7 +28,21 @@ const getUtilClass = () => {
 };
 
 export const UtilClassToUse: any = getUtilClass();
-export const utilsToUse: IUtils<MaterialUiPickersDate> = new UtilClassToUse();
+export const utilsToUse = new UtilClassToUse();
+
+// jest.doMock('../_shared/WithUtils', () => {
+//   const WithUtils = () => (Component: React.ComponentType<WithUtilsProps>) => {
+//     const withUtils: React.SFC<any> = props => (
+//       <Component utils={utilsToUse} {...props} />
+//     );
+//     withUtils.displayName = `WithUtils(${Component.displayName ||
+//     Component.name})`;
+//
+//     return withUtils;
+//   };
+//
+//   return { default: WithUtils };
+// });
 
 const getComponentWithUtils = <P extends WithUtilsProps>(element: React.ReactElement<P>) =>
   React.cloneElement(element, { utils: utilsToUse } as any);
@@ -37,20 +52,11 @@ export const shallow = <P extends WithUtilsProps>(element: React.ReactElement<P>
 
 export const mount = <P extends WithUtilsProps>(element: React.ReactElement<P>) =>
   enzyme.mount(
-    <ThemeProvider theme={createMuiTheme()}>
-      <LocalizationProvider dateAdapter={UtilClassToUse}>{element}</LocalizationProvider>
-    </ThemeProvider>
+    <MuiPickersUtilsProvider utils={UtilClassToUse}>
+      <MuiThemeProvider theme={theme}>{element}</MuiThemeProvider>
+    </MuiPickersUtilsProvider>
   );
 
 export const shallowRender = (render: (props: any) => React.ReactElement<any>) => {
   return enzyme.shallow(render({ utils: utilsToUse, classes: {} as any, theme: {} as any }));
-};
-
-// toHaveBeenCalledWith doesn't work with moment because of changing some internal props
-export const toHaveBeenCalledExceptMoment = (mock: jest.Mock<any, any>, params: any[]) => {
-  if (process.env.UTILS === 'moment') {
-    return expect(mock).toHaveBeenCalled();
-  }
-
-  return expect(mock).toHaveBeenCalledWith(...params);
 };

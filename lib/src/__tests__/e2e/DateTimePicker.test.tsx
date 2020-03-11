@@ -1,26 +1,23 @@
-import * as React from 'react';
 import { ReactWrapper } from 'enzyme';
+import * as React from 'react';
+import DateTimePicker, { DateTimePickerProps } from '../../DateTimePicker/DateTimePicker';
 import { mount, utilsToUse } from '../test-utils';
-import { mount as enzymeDefaultMount } from 'enzyme';
-import { ThemeProvider, createMuiTheme } from '@material-ui/core';
-import { DateTimePicker, DateTimePickerProps } from '../../DateTimePicker/DateTimePicker';
-
-const format = process.env.UTILS === 'moment' ? 'MM/DD/YYYY HH:mm' : 'MM/dd/yyyy hh:mm';
 
 describe('e2e - DateTimePicker', () => {
   let component: ReactWrapper<DateTimePickerProps>;
-
-  const onCloseMock = jest.fn();
   const onChangeMock = jest.fn();
 
   beforeEach(() => {
+    jest.clearAllMocks();
     component = mount(
       <DateTimePicker
-        clearable
-        inputFormat={format}
-        onClose={onCloseMock}
+        date={utilsToUse.date('2018-01-01T00:00:00.000Z')}
         onChange={onChangeMock}
-        value={utilsToUse.date('2018-01-01T00:00:00.000Z')}
+        openTo="date"
+        leftArrowIcon="keyboard_arrow_left"
+        rightArrowIcon="keyboard_arrow_right"
+        dateRangeIcon="date_range"
+        timeIcon="access_time"
       />
     );
   });
@@ -29,74 +26,48 @@ describe('e2e - DateTimePicker', () => {
     expect(component).toBeTruthy();
   });
 
-  it('Should open modal with picker on click', () => {
-    component.find('input').simulate('click');
-    expect(component.find('WithStyles(ForwardRef(Dialog))').prop('open')).toBeTruthy();
-  });
-
-  it('Should change internal state on update', () => {
-    component.find('input').simulate('click');
+  it('Should render year selection', () => {
     component
-      .find('Day button')
-      .at(3)
+      .find('ToolbarButton')
+      .first()
       .simulate('click');
 
-    expect(
-      component
-        .find('ToolbarButton')
-        .at(0)
-        .text()
-    ).toBe('2018');
-    // expect(component.find('ToolbarButton').at(1).text()).toBe('Jan 3');
-  });
-});
+    expect(component.find('Year').length).toBe(201);
 
-describe('e2e -- Controlling open state', () => {
-  let component: ReactWrapper<DateTimePickerProps>;
-  const onCloseMock = jest.fn();
-
-  beforeEach(() => {
-    component = mount(
-      <DateTimePicker
-        open
-        onClose={onCloseMock}
-        onChange={jest.fn()}
-        onFocus={jest.fn()}
-        value={utilsToUse.date('2018-01-01T00:00:00.000Z')}
-      />
-    );
-  });
-
-  it('Should be opened', () => {
-    expect(component.find('WithStyles(ForwardRef(Dialog))').prop('open')).toBeTruthy();
-  });
-
-  it('Should close', () => {
     component
-      .find('ForwardRef(DialogActions) button')
-      .at(0)
+      .find('Year')
+      .at(1)
       .simulate('click');
-    expect(onCloseMock).toHaveBeenCalled();
-  });
-});
-
-describe('e2e -- Override utils using `dateAdapter`', () => {
-  let component: ReactWrapper<DateTimePickerProps>;
-
-  beforeEach(() => {
-    component = enzymeDefaultMount(
-      <ThemeProvider theme={createMuiTheme()}>
-        <DateTimePicker
-          value={utilsToUse.date('2018-01-01T00:00:00.000Z')}
-          onChange={jest.fn()}
-          dateAdapter={utilsToUse}
-        />
-      </ThemeProvider>
-    );
+    expect(onChangeMock).toHaveBeenCalled();
   });
 
-  it('Should renders and opens without crash', () => {
-    component.find('input').simulate('click');
-    expect(component.find('[data-mui-test="datetimepicker-toolbar-date"] h4').text()).toBe('Jan 1');
+  it('Should render hour view', () => {
+    component
+      .find('ToolbarButton')
+      .at(2)
+      .simulate('click');
+    expect(component.find('TimePickerView').props().type).toBe('hours');
+  });
+
+  it('Should render minutes view', () => {
+    component
+      .find('ToolbarButton')
+      .at(4)
+      .simulate('click');
+    expect(component.find('TimePickerView').props().type).toBe('minutes');
+  });
+
+  it('Should change meridiem', () => {
+    component
+      .find('ToolbarButton')
+      .at(6)
+      .simulate('click');
+
+    if (process.env.UTILS === 'moment') {
+      expect(onChangeMock).toHaveBeenCalled();
+      return;
+    }
+
+    expect(onChangeMock).toHaveBeenCalledWith(utilsToUse.date('2018-01-01T12:00:00.000Z'), false);
   });
 });

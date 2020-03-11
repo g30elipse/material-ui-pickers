@@ -1,13 +1,13 @@
-import { arrayIncludes } from './utils';
 import { IUtils } from '@date-io/core/IUtils';
+import { DatePickerViewType } from '../constants/DatePickerView';
+import { DateType } from '../constants/prop-types';
 import { MaterialUiPickersDate } from '../typings/date';
-import { DatePickerView } from '../DatePicker/DatePicker';
 
 interface FindClosestDateParams {
   date: MaterialUiPickersDate;
   utils: IUtils<MaterialUiPickersDate>;
-  minDate: MaterialUiPickersDate;
-  maxDate: MaterialUiPickersDate;
+  minDate: DateType;
+  maxDate: DateType;
   disableFuture: boolean;
   disablePast: boolean;
   shouldDisableDate: (date: MaterialUiPickersDate) => boolean;
@@ -24,7 +24,10 @@ export const findClosestEnabledDate = ({
 }: FindClosestDateParams) => {
   const today = utils.startOfDay(utils.date());
 
-  if (disablePast && utils.isBefore(minDate!, today)) {
+  minDate = minDate && utils.date(minDate);
+  maxDate = maxDate && utils.date(maxDate);
+
+  if (disablePast && utils.isBefore(minDate, today)) {
     minDate = today;
   }
 
@@ -70,27 +73,26 @@ export const findClosestEnabledDate = ({
     }
   }
 
-  // fallback to today if no enabled days
-  return utils.date();
+  return null;
 };
 
-export const isYearOnlyView = (views: readonly DatePickerView[]) =>
+export const isYearOnlyView = (views: DatePickerViewType[]) =>
   views.length === 1 && views[0] === 'year';
 
-export const isYearAndMonthViews = (views: readonly DatePickerView[]) =>
-  views.length === 2 && arrayIncludes(views, 'month') && arrayIncludes(views, 'year');
+export const isYearAndMonthViews = (views: DatePickerViewType[]) =>
+  views.length === 2 && views.includes('month') && views.includes('year');
 
 export const getFormatByViews = (
-  views: readonly DatePickerView[],
+  views: DatePickerViewType[],
   utils: IUtils<MaterialUiPickersDate>
 ) => {
   if (isYearOnlyView(views)) {
-    return utils.formats.year;
+    return utils.yearFormat;
   }
 
   if (isYearAndMonthViews(views)) {
-    return utils.formats.monthAndYear;
+    return utils.yearMonthFormat;
   }
 
-  return utils.formats.keyboardDate;
+  return utils.dateFormat;
 };
